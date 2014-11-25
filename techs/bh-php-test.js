@@ -14,8 +14,10 @@
  * **Пример**
  *
  * ```javascript
- * nodeConfig.addTech(require('enb-bh-php'));
+ * nodeConfig.addTech(require('enb-bh-php').bhPhpTest);
  */
+
+var util = require('../lib/util');
 
 module.exports = require('enb/lib/build-flow').create()
     .name('bh.php')
@@ -25,65 +27,68 @@ module.exports = require('enb/lib/build-flow').create()
         var node = this.node;
 
         var bhChunk = [
-            '                \'require_once __DIR__ . "/../project-stub/vendor/php-bem-bh/index.php";\',',
-            '                \'$bh = new BEM\\\\BH();\',',
-            '                \'$bh->setOptions(["jsAttrName" => "data-bem", "jsAttrScheme" => "json"]);\''
+            '                "require_once __DIR__ . \\"' + (this._options.phpBootstrap || '/vendor/bem/bh/index.php') + '\\";",',
+            '                "$bh = new \\\\BEM\\\\BH();",',
+            '                "$bh->setOptions(' + util.packData(this._options) + ');"'
         ].join('\n');
 
         var tmplIncludes = sourceFiles.map(function(file) {
-            return '                \'$fn = include __DIR__ . "/' + node.relativePath(file.fullname).replace('../../', '') + '"; $fn($bh);\',';
+            return '                "$fn = include __DIR__ . \\"/' + node.relativePath(file.fullname).replace('../../', '') + '\\"; $fn($bh);",';
         }).join('\n');
 
-        return [
-            "var spawn = require('child_process').spawn;",
-
-            "module.exports = {",
-            "    apply: function(bemjson, cb) {",
-            "        bemjson = JSON.stringify(bemjson);",
-            "        bemjson = bemjson.replace(/\\n/g, '').replace(/[\\\\\"']/g, '\\\\$&').replace(/\\u0000/g, '\\\\0')",
-            "        var php = spawn('php'),",
-            "            html = '',",
-            "            errs = '',",
-            "            code = [",
-            "                '<?php',",
-                             // dump thing
-            "                'function d () { return call_user_func_array(\"\\\\BEM\\\\d\", func_get_args()); }',",
+        var shutdownWrapper = [
+                             // dumping thing for debuggin' purpose
+            '                "function d () { return call_user_func_array(\\"\\\\BEM\\\\d\\", func_get_args()); }",',
                              // this is a splitter between stdout (render results) and stderr (debugging purposes)
-            "                'register_shutdown_function(function () use (&$res) {',",
-            "                '    $output = ob_get_clean();',",
-            "                '    $stderr = fopen(\"php://stderr\", \"w\");',",
-            "                '    fwrite($stderr, $output);',",
-            "                '    fclose($stderr);',",
-            "                '    echo $res;',",
-            "                '});',",
-                             bhChunk + ",",
+            '                "register_shutdown_function(function () use (&$res) {",',
+            '                "    $output = ob_get_clean();",',
+            '                "    $stderr = fopen(\\"php://stderr\\", \\"w\\");",',
+            '                "    fwrite($stderr, $output);",',
+            '                "    fclose($stderr);",',
+            '                "    echo $res;",',
+            '                "});",'
+        ].join('\n');
+
+        return [
+            'var spawn = require("child_process").spawn;',
+
+            'var phpPackData = ' + util.innerPackData + ';',
+
+            'module.exports = {',
+            '    apply: function(bemjson, cb) {',
+            '        var php = spawn("php"),',
+            '            html = "",',
+            '            errs = "",',
+            '            code = [',
+            '                "<?php",',
+                             shutdownWrapper + ',',
+                             bhChunk + ',',
                              tmplIncludes,
-                             // catch all debugging output
-            "                'ob_start();',",
-            "                '$res = $bh->apply(\"' + bemjson + '\");',",
-            "            ].join('\\n');",
+            '                "ob_start();",', // catch output (to print as well as console.log does)
+            '                "$res = $bh->apply(" + phpPackData(bemjson) + ");",',
+            '            ].join("\\n");',
 
-            "        php.stdout.on('data', function(data) {",
-            "            html += data.toString();",
-            "        });",
+            '        php.stdout.on("data", function(data) {',
+            '            html += data.toString();',
+            '        });',
 
-            "        php.stderr.on('data', function(data) {",
-            "            errs += data.toString();",
-            "        });",
+            '        php.stderr.on("data", function(data) {',
+            '            errs += data.toString();',
+            '        });',
 
-            "        php.on('close', function(code) {",
-            "            if (errs || code !== 0) {",
-            "                code && console.log('php process exited with code ' + code);",
-            "                errs && console.log('\\n' + errs);",
-            "            }",
-            "            cb(null, html);",
-            "        });",
+            '        php.on("close", function(code) {',
+            '            if (errs || code !== 0) {',
+            '                code && console.log("php process exited with code " + code);',
+            '                errs && console.log("\\n" + errs);',
+            '            }',
+            '            cb(null, html);',
+            '        });',
 
-            "        php.stdin.write(code);",
-            "        php.stdin.end();",
-            "    },",
-            "    isAsync: true",
-            "}"
+            '        php.stdin.write(code);',
+            '        php.stdin.end();',
+            '    },',
+            '    isAsync: true',
+            '}'
         ].join('\n');
 
     })

@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - 5.5
+  - 5.4
+
+before_script:
+  - npm install
+  - php
+
+script:
+  - npm run test
+
