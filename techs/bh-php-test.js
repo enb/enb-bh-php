@@ -10,6 +10,7 @@
  * * *String* **filesTarget** — files-таргет, на основе которого получается список исходных файлов
  *   (его предоставляет технология `files`). По умолчанию — `?.files`.
  * * *String* **sourceSuffixes** — суффиксы файлов, по которым строится `files`-таргет. По умолчанию — 'bh.php'.
+ * * *String* **phpBootstrap** — Путь к библиотеке `bem/bh` относительно корня проекта. По умолчанию — `vendor/bem/bh/index.php`.
  *
  * **Пример**
  *
@@ -27,7 +28,7 @@ module.exports = require('enb/lib/build-flow').create()
         var node = this.node;
 
         var bhChunk = [
-            '                "require_once __DIR__ . \\"' + (this._options.phpBootstrap || '/vendor/bem/bh/index.php') + '\\";",',
+            '                "require_once __DIR__ . \\"/' + (this._options.phpBootstrap || '/vendor/bem/bh/index.php') + '\\";",',
             '                "$bh = new \\\\BEM\\\\BH();",',
             '                "$bh->setOptions(' + util.packData(this._options) + ');"'
         ].join('\n');
