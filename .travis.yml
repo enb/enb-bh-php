@@ -6,7 +6,7 @@ php:
 
 before_script:
   - npm install
-  - php
+#  - composer require bem/bh
 
 script:
   - npm run test
