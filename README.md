@@ -14,6 +14,7 @@ $ npm install --save-dev enb-bh-php
 
 * [bh-php](#bh-php)
 * [bh-php-test](#bh-php-test)
+* [bemjson-to-html](#bemjson-to-html)
 
 Для работы модуля требуется зависимость от пакета `enb` версии `0.12.0` или выше.
 
@@ -53,6 +54,22 @@ nodeConfig.addTech(require('enb-bh-php').bhPhp);
 
 ```javascript
 nodeConfig.addTech(require('enb-bh-php').bhPhpTest);
+```
+
+### bemjson-to-html
+
+Собирает *html*-файл с помощью *bemjson* и *bh.php*.
+
+**Опции**
+
+* *String* **bhFile** — Исходный BH-файл. По умолчанию — `?.bh.js`.
+* *String* **bemjsonFile** — Исходный BEMJSON-файл. По умолчанию — `?.bemjson.js`.
+* *String* **target** — Результирующий HTML-файл. По умолчанию — `?.html`.
+
+**Пример**
+
+```javascript
+nodeConfig.addTech(require('enb-bh/techs/html-from-bemjson'));
 ```
 
 ## Лицензия
