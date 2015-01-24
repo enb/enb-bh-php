@@ -9,13 +9,13 @@
     "php"
   ],
   "author": "Alexej Yaroshevich <zxqfox@gmail.com> (http://github.com/zxqfox)",
-  "repository": "https://github.com/zxqfox/enb-bh-php",
-  "homepage": "https://github.com/zxqfox/enb-bh-php",
-  "bugs": "https://github.com/zxqfox/enb-bh-php/issues",
+  "repository": "https://github.com/enb-bem/enb-bh-php",
+  "homepage": "https://github.com/enb-bem/enb-bh-php",
+  "bugs": "https://github.com/enb-bem/enb-bh-php/issues",
   "license": [
     {
       "type": "MIT",
-      "url": "https://github.com/zxqfox/enb-bh-php/blob/master/LICENSE"
+      "url": "https://github.com/enb-bem/enb-bh-php/blob/master/LICENSE"
     }
   ],
   "contributors": [

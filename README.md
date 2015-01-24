@@ -1,8 +1,8 @@
 # enb-bh-php
 
-[![NPM version](http://img.shields.io/npm/v/enb-bh-php.svg?style=flat)](http://badge.fury.io/js/enb-bh-php) [![Build Status](http://img.shields.io/travis/zxqfox/enb-bh-php/master.svg?style=flat)](https://travis-ci.org/zxqfox/enb-bh-php) [![Dependency Status](http://img.shields.io/david/zxqfox/enb-bh-php.svg?style=flat)](https://david-dm.org/zxqfox/enb-bh-php)
+[![NPM version](http://img.shields.io/npm/v/enb-bh-php.svg?style=flat)](http://badge.fury.io/js/enb-bh-php) [![Build Status](http://img.shields.io/travis/enb-bem/enb-bh-php/master.svg?style=flat)](https://travis-ci.org/enb-bem/enb-bh-php) [![Dependency Status](http://img.shields.io/david/enb-bem/enb-bh-php.svg?style=flat)](https://david-dm.org/enb-bem/enb-bh-php)
 
-Поддержка [`bh-php`](https://github.com/zxqfox/bh-php) для ENB.
+Поддержка [`bh-php`](https://github.com/bem/bh-php) для ENB.
 
 ## Установка
 
