@@ -74,4 +74,4 @@ nodeConfig.addTech(require('enb-bh/techs/html-from-bemjson'));
 
 ## Лицензия
 
-© 2014 Alexey Yaroshevich. Код лицензирован [The MIT License](LICENSE).
+[The MIT License](LICENSE).
