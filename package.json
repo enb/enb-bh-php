@@ -32,7 +32,7 @@
     "node": ">= 0.10.0"
   },
   "main": "lib/index.js",
-  "peerDependencies": {
+  "deprecatedPeerDependencies": {
     "enb": ">= 0.12.0 < 1.0.0"
   },
   "devDependencies": {
