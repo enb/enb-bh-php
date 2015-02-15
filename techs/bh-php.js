@@ -19,23 +19,51 @@
  */
 
 var util = require('../lib/util');
+var fs = require('fs');
 
 module.exports = require('enb/lib/build-flow').create()
     .name('bh.php')
     .target('target', '?.bh.php')
+    .defineOption('phpBootstrap', 'vendor/bem/bh/index.php')
     .useFileList('bh.php')
     .builder(function(sourceFiles) {
         var node = this.node;
+        var opts = this._options;
+
+        var bhOpts = {};
+        ['jsAttrName', 'jsAttrScheme', 'escapeContent'].forEach(function (opt) {
+            if (opts.hasOwnProperty(opt)) bhOpts[opt] = opts[opt];
+        });
 
         var bhChunk = [
             '<?php',
-            'require_once __DIR__ . "/' + (this._options.phpBootstrap || 'vendor/bem/bh/index.php') + '";',
+            opts.phpBootstrap !== false?
+                'require_once __DIR__ . "/' + (opts.phpBootstrap) + '";'
+                : '',
             '$bh = new \\BEM\\BH();',
-            '$bh->setOptions('  + util.innerPackData(this._options) + ');'
-        ].join('\n');
+            '$bh->setOptions('  + util.innerPackData(bhOpts) + ');'
+        ];
 
-        return [bhChunk].concat(sourceFiles.map(function(file) {
-            return '\n$fn = include __DIR__ . "/' + node.relativePath(file.fullname) + '"; $fn($bh);';
-        })).join('\n');
+        return bhChunk.concat(
+                sourceFiles.map(readFile),
+                [ 'return $bh;\n' ]
+            ).join('\n');
+
+        function readFile(file) {
+            if (opts.devMode) {
+                return '\n$fn = include __DIR__ . "/' + node.relativePath(file.fullname) + '"; $fn($bh);';
+            }
+
+            return [
+                '// file: ' + node.relativePath(file.fullname),
+                stripPhp(fs.readFileSync(file.fullname)),
+                ''
+            ].join('\n');
+        }
     })
     .createTech();
+
+function stripPhp (php) {
+    // <?php\nreturn function ($bh) {\n(...)\n};\n?>\n
+    return String(php).replace(/^(<\?(php)?\n\s*)?(return\s+function\s*\(\s*\$bh\s*\)\s*{\s*\n)?|\s*(\n\s*}\s*;)?\s*(\n\s*\?>\s*)?$/ig, '');
+}
