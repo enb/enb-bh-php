@@ -31,13 +31,13 @@ module.exports = require('enb/lib/build-flow').create()
         var opts = this._options;
 
         var bhOpts = {};
-        ['jsAttrName', 'jsAttrScheme', 'escapeContent'].forEach(function (opt) {
+        ['jsAttrName', 'jsAttrScheme', 'escapeContent'].forEach(function(opt) {
             if (opts.hasOwnProperty(opt)) bhOpts[opt] = opts[opt];
         });
 
         var bhChunk = [
             '<?php',
-            opts.phpBootstrap !== false?
+            opts.phpBootstrap !== false ?
                 'require_once __DIR__ . "/' + (opts.phpBootstrap) + '";'
                 : '',
             '$bh = new \\BEM\\BH();',
@@ -46,7 +46,7 @@ module.exports = require('enb/lib/build-flow').create()
 
         return bhChunk.concat(
                 sourceFiles.map(readFile),
-                [ 'return $bh;\n' ]
+                ['return $bh;\n']
             ).join('\n');
 
         function readFile(file) {
@@ -63,7 +63,7 @@ module.exports = require('enb/lib/build-flow').create()
     })
     .createTech();
 
-function stripPhp (php) {
+function stripPhp(php) {
     // <?php\nreturn function ($bh) {\n(...)\n};\n?>\n
     return String(php).replace(/^(<\?(php)?\n\s*)?(return\s+function\s*\(\s*\$bh\s*\)\s*{\s*\n)?|\s*(\n\s*}\s*;)?\s*(\n\s*\?>\s*)?$/ig, '');
 }
