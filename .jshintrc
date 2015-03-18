@@ -16,5 +16,7 @@
     "node": true,
 
     "expr": true,
-    "sub": true
+    "sub": true,
+
+    "predef": ["JSON"]
 }
