@@ -65,5 +65,5 @@ module.exports = require('enb/lib/build-flow').create()
 
 function stripPhp(php) {
     // <?php\nreturn function ($bh) {\n(...)\n};\n?>\n
-    return String(php).replace(/^(<\?(php)?\n\s*)?(return\s+function\s*\(\s*\$bh\s*\)\s*{\s*\n)?|\s*(\n\s*}\s*;)?\s*(\n\s*\?>\s*)?$/ig, '');
+    return String(php).replace(/^(<\?(php)?(\r\n|\r|\n)\s*)?(return\s+function\s*\(\s*\$bh\s*\)\s*{\s*\n)?|\s*(\n\s*}\s*;)?\s*(\n\s*\?>\s*)?$/ig, '');
 }
