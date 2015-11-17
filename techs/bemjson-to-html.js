@@ -32,7 +32,7 @@ module.exports = require('enb/lib/build-flow').create()
         dropRequireCache(require, bemjsonFilename);
 
         return requireOrEval(bemjsonFilename)
-            .then(function(bemjson) {
+            .then(function() {
 
                 var code = [
                     '$res = "";',
@@ -49,10 +49,10 @@ module.exports = require('enb/lib/build-flow').create()
                     '    echo $res;',
                     '});',
 
-                    'require "' + bhPhpFilename + '";',
+                    'require \'' + bhPhpFilename + '\';',
 
                     'ob_start();', // catch output (to print as well as console.log does)
-                    '$res = $bh->apply(' + util.innerPackData(bemjson) + ');'
+                    '$res = $bh->apply(file_get_contents(\'' + bemjsonFilename + '\'));'
                 ];
 
                 return util.runPhpCode(code);
